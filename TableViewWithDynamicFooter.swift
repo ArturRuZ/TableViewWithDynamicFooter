@@ -1,30 +1,36 @@
 import UIKit
 
 final class TableViewWithDynamicFooter: UITableView {
-   private var isObservingCahnges: Bool = false
+   private var isAwaitnigReloading: Bool = false
+   private var lastCalculatedFooterSize: CGFloat?
    
    private func setupHeaderHeight() {
       guard let footer = self.tableFooterView else { return }
       
-      let emptySpaceUnderContent = self.bounds.height - self.contentSize.height
-      
-      switch isObservingCahnges {
-      case true:
-         guard emptySpaceUnderContent != 0 else { return }
-         fallthrough
-      case false:
-         let minFooterHeight = footer.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-         
-         let targetHeight = max(0, emptySpaceUnderContent)
-         footer.frame.size.height  = max(targetHeight, minFooterHeight)
-         
-         isScrollEnabled = footer.frame.size.height == minFooterHeight
-         isObservingCahnges = true
-      }
-   }
+      let originContentHeight = self.contentSize.height - (lastCalculatedFooterSize ?? 0)
+      let emptySpaceUnderContent = self.bounds.height - originContentHeight
 
+      let minFooterHeight = footer.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+      assert(minFooterHeight != 0, "Footer height constraints doen't let usage of systemLayoutSizeFitting")
+    
+      footer.frame.size.height  = max(emptySpaceUnderContent, minFooterHeight)
+      self.contentSize.height = footer.frame.origin.y + footer.frame.height
+      lastCalculatedFooterSize = footer.frame.size.height
+    
+      isScrollEnabled = footer.frame.size.height == minFooterHeight
+   }
+   
+   override func reloadData() {
+      isAwaitnigReloading = true
+      super.reloadData()
+   }
+   
   override func layoutSubviews() {
     super.layoutSubviews()
-    setupHeaderHeight()
+   
+   guard isAwaitnigReloading == true else { return } // allow to calculate footer size once, after reload regardless of the number of layoutSubviews calls
+   setupHeaderHeight()
+   isAwaitnigReloading = false
   }
 }
+
