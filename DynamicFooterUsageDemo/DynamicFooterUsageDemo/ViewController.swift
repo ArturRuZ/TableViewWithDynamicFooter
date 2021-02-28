@@ -49,7 +49,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 //MARK:- DemoFooterDelegate implementation
 extension ViewController: DemoFooterDelegate {
    func onUpdateRequest() {
-      let random = Int.random(in: 1..<30)
+      let random = Int.random(in: minDataCount..<maxDataCount)
       demoData = mockDataGenerator.generate(count: random)
       demoTableView.reloadData()
    }
