@@ -11,7 +11,7 @@ final class TableViewWithDynamicFooter: UITableView {
       let emptySpaceUnderContent = self.bounds.height - originContentHeight
 
       let minFooterHeight = footer.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
-      assert(minFooterHeight != 0, "Footer height constraints doen't let usage of systemLayoutSizeFitting")
+      assert(minFooterHeight != 0, "Footer height constraints don't let usage of systemLayoutSizeFitting")
     
       footer.frame.size.height  = max(emptySpaceUnderContent, minFooterHeight)
       self.contentSize.height = footer.frame.origin.y + footer.frame.height
