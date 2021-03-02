@@ -8,7 +8,7 @@ final class TableViewWithDynamicFooter: UITableView {
       guard let footer = self.tableFooterView else { return }
       
       let originContentHeight = self.contentSize.height - (lastCalculatedFooterSize ?? 0)
-      let emptySpaceUnderContent = self.bounds.height - originContentHeight
+      let emptySpaceUnderContent = self.bounds.height - originContentHeight - (tableHeaderView?.frame.height ?? 0)
 
       let minFooterHeight = footer.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
       assert(minFooterHeight != 0, "Footer height constraints don't let usage of systemLayoutSizeFitting")
@@ -26,8 +26,13 @@ final class TableViewWithDynamicFooter: UITableView {
    }
    
   override func layoutSubviews() {
+    if let header = tableHeaderView, isAwaitnigReloading {
+      let minHeaderHeight = header.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+      header.frame.size.height = minHeaderHeight
+   }
+     
     super.layoutSubviews()
-   
+  
    guard isAwaitnigReloading == true else { return } // allow to calculate footer size once, after reload regardless of the number of layoutSubviews calls
    setupHeaderHeight()
    isAwaitnigReloading = false
