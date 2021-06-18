@@ -4,7 +4,7 @@ final class TableViewWithDynamicFooter: UITableView {
    private var isAwaitnigReloading: Bool = false
    private var lastCalculatedFooterSize: CGFloat?
    
-   private func setupHeaderHeight() {
+   private func setupFooterHeight() {
       guard let footer = self.tableFooterView else { return }
       
       let originContentHeight = self.contentSize.height - (lastCalculatedFooterSize ?? 0)
@@ -34,7 +34,7 @@ final class TableViewWithDynamicFooter: UITableView {
     super.layoutSubviews()
   
    guard isAwaitnigReloading == true else { return } // allow to calculate footer size once, after reload regardless of the number of layoutSubviews calls
-   setupHeaderHeight()
+   setupFooterHeight()
    isAwaitnigReloading = false
   }
 }
